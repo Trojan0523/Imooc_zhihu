@@ -25,7 +25,7 @@ export default defineComponent({
       context.emit('form-submit', result)
     }
     const callback = (func?: ValidateFunc) => {
-      if (func !== undefined) {
+      if (func) {
         funcArr.push(func)
       }
     }

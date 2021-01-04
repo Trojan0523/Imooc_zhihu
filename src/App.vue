@@ -17,70 +17,23 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, reactive, ref } from 'vue'
+import { defineComponent } from 'vue'
 import 'bootstrap/dist/css/bootstrap.min.css'
 import GlobalHeader, { UserProps } from '@/components/GlobalHeader.vue'
-import { RulesProp } from '@/components/ValidateInput.vue'
 
 const currentUser: UserProps = {
   isLogin: false,
   name: 'Trojan'
 
 }
-const emailReg = /^([A-Za-z0-9_\-.])+@([A-Za-z0-9_\-.])+\.([A-Za-z]{2,4})$/
-
 export default defineComponent({
   name: 'App',
   components: {
     GlobalHeader
   },
   setup () {
-    const inputRef = ref<any>()
-    const emailValue = ref('123@test.com')
-    const emailRules: RulesProp = [
-      {
-        type: 'required',
-        message: '电子邮箱地址不能为空'
-      },
-      {
-        type: 'email',
-        message: '请输入正确的电子邮箱格式'
-      }
-    ]
-    const emailRef = reactive({
-      value: '',
-      error: false,
-      message: ''
-    })
-    const passwordValue = ref('123')
-    const passwordRules: RulesProp = [
-      {
-        type: 'required',
-        message: '密码不能为空'
-      }
-    ]
-    const validateEmail = () => {
-      if (emailRef.value.trim() === '') {
-        emailRef.error = true
-        emailRef.message = 'can not be empty'
-      } else if (!emailReg.test(emailRef.value)) {
-        emailRef.error = true
-        emailRef.message = 'Email validation is not correct'
-      }
-    }
-    const onFormSubmit = (result: boolean) => {
-      console.log('result', result)
-    }
     return {
-      currentUser,
-      emailRef,
-      validateEmail,
-      emailRules,
-      onFormSubmit,
-      inputRef,
-      emailValue,
-      passwordValue,
-      passwordRules
+      currentUser
     }
   }
 })
