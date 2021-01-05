@@ -1,6 +1,5 @@
 <template>
   <div class="home-page">
-    <h2>{{biggerColumnLen}}</h2>
     <section class="py-5 text-center container">
       <div class="row py-lg-5">
         <div class="col-lg-6 col-md-8 mx-auto">

@@ -4,6 +4,7 @@ import Login from '@/views/Login.vue'
 import ColumnDetail from '@/views/ColumnDetail.vue'
 import PostList from '@/components/PostList.vue'
 import CreatePost from '@/components/CreatePost.vue'
+import store from '@/store'
 
 const router = createRouter({
   history: createWebHistory(),
@@ -16,7 +17,8 @@ const router = createRouter({
     {
       path: '/login',
       name: 'login',
-      component: Login
+      component: Login,
+      meta: { redirectAlreadyLogin: true }
     },
     {
       path: '/column/:id',
@@ -31,9 +33,22 @@ const router = createRouter({
     {
       path: '/create',
       name: 'create',
-      component: CreatePost
+      component: CreatePost,
+      meta: { requiresLogin: true }
     }
   ]
 })
-
+router.beforeEach((to, from, next) => {
+  if (to.meta.requiresLogin && !store.state.user.isLogin) {
+    next({ name: 'login' })
+    return {
+      path: '/login',
+      query: { redirect: to.fullPath }
+    }
+  } else if (to.meta.redirectAlreadyLogin && store.state.user.isLogin) {
+    next('/')
+  } else {
+    next()
+  }
+})
 export default router
