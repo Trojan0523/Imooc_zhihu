@@ -22,11 +22,10 @@
 <script lang="ts">
 import { defineComponent, ref } from 'vue'
 import ValidateForm from '@/components/ValidateForm.vue'
-import { GlobalDataProps } from '@/store'
+import { GlobalDataProps, PostProps } from '@/store'
 import ValidateInput, { RulesProp } from '@/components/ValidateInput.vue'
 import { useRouter } from 'vue-router'
 import { useStore } from 'vuex'
-import { PostProps } from '@/testData'
 
 export default defineComponent({
   name: 'Login',
@@ -53,19 +52,19 @@ export default defineComponent({
     ]
     const onFormSubmit = (result: boolean) => {
       if (result) {
-        const { columnId } = store.state.user
-        if (columnId) {
+        const { column } = store.state.user
+        if (column) {
           const newPost: PostProps = {
-            id: new Date().getTime(),
+            _id: new Date().getTime(),
             title: titleValue.value,
             content: contentValue.value,
-            columnId,
+            column,
             createdAt: new Date().toLocaleString()
           }
           store.commit('createPost', newPost)
           router.push({
             name: 'column',
-            params: { id: columnId }
+            params: { id: column }
           })
         }
       }

@@ -63,8 +63,8 @@ export default defineComponent({
           email: emailVal.value,
           password: passwordVal.value
         }
-        store.dispatch('login', payload).then(data => {
-          console.log(data)
+        store.dispatch('loginAndFetch', payload).then(data => {
+          console.log('data', data)
           router.push('/')
         })
       }
