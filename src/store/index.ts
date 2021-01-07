@@ -19,6 +19,8 @@ export interface PostProps {
 }
 
 export interface GlobalDataProps {
+  token: string;
+  loading: boolean;
   columns: ColumnProps[];
   posts: PostProps[];
   user: UserProps;
@@ -41,8 +43,17 @@ const getAndCommit = async (url: string, mutationsName: string, commit: Commit) 
   const { data } = await axios.get(url)
   commit(mutationsName, data)
 }
+
+const postAndCommit = async (url: string, mutationsName: string, commit: Commit, payload: any) => {
+  const { data } = await axios.post(url, payload)
+  commit(mutationsName, data)
+  return data
+}
+
 const store = createStore<GlobalDataProps>({
   state: {
+    token: '',
+    loading: false,
     columns: [],
     posts: [],
     user: {
@@ -52,21 +63,27 @@ const store = createStore<GlobalDataProps>({
     }
   },
   mutations: {
-    login (state) {
-      state.user = {
-        ...state.user,
-        isLogin: true,
-        name: 'trojan'
-      }
+    // login (state) {
+    //   state.user = {
+    //     ...state.user,
+    //     isLogin: true,
+    //     name: 'trojan'
+    //   }
+    // },
+    fetchColumns (state, rawData) {
+      state.columns = rawData.data.list
     },
-    fetchColumns (state, rowData) {
-      state.columns = rowData.data.list
+    fetchColumn (state, rawData) {
+      state.columns = [rawData.data]
     },
-    fetchColumn (state, rowData) {
-      state.columns = [rowData.data]
+    fetchPosts (state, rawData) {
+      state.posts = rawData.data.list
     },
-    fetchPosts (state, rowData) {
-      state.posts = rowData.data.list
+    setLoading (state, status) {
+      state.loading = status
+    },
+    login (state, rawData) {
+      state.token = rawData.data.token
     }
   },
   actions: {
@@ -78,6 +95,9 @@ const store = createStore<GlobalDataProps>({
     },
     async fetchPosts ({ commit }, cid) {
       getAndCommit(`/columns/${cid}/posts`, 'fetchPosts', commit)
+    },
+    login ({ commit }, payload) {
+      return postAndCommit('/user/login', 'login', commit, payload)
     }
   },
   getters: {
