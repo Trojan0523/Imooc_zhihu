@@ -13,7 +13,8 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, onUnmounted } from 'vue'
+import { defineComponent } from 'vue'
+import useCreateNode from '@/hooks/useCreateNode'
 
 export default defineComponent({
   props: {
@@ -25,12 +26,7 @@ export default defineComponent({
     }
   },
   setup () {
-    const node = document.createElement('div')
-    node.id = 'back'
-    document.body.appendChild(node)
-    onUnmounted(() => {
-      document.body.removeChild(node)
-    })
+    useCreateNode('back')
   }
 })
 </script>

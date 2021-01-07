@@ -22,13 +22,16 @@ axios.interceptors.request.use(config => {
 })
 axios.interceptors.request.use(config => {
   store.commit('setLoading', true)
+  store.commit('setError', {
+    status: false,
+    message: ''
+  })
   return config
 })
 axios.interceptors.response.use(config => {
   store.commit('setLoading', false)
   return config
 }, e => {
-  console.log(e.response)
   const { error } = e.response.data
   store.commit('setError', {
     status: true,
