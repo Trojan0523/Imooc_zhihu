@@ -3,8 +3,8 @@
     <ValidateForm @from-submit="onFromSubmit">
       <div class="mb-3">
         <label class="form-label">邮箱地址</label>
-        <ValidateInput rules="emailRules"
-                       v-model="fromData.email"
+        <ValidateInput :rules="emailsRules"
+                       v-model="formData.email"
                        placeholder="请输入邮箱地址"
                        type="text"/>
       </div>
@@ -12,7 +12,7 @@
         <label class="form-label">昵称</label>
         <ValidateInput
           :rules="nameRules"
-          v-model="formData.nikeName"
+          v-model="formData.nickName"
           placeholder="请输入昵称"
           type="text"/>
       </div>
@@ -38,10 +38,11 @@
 <script lang="ts">
 import { defineComponent, reactive } from 'vue'
 import { useRouter } from 'vue-router'
-import ValidateForm from '@/components/ValidateForm'
-import ValidateInput, { RulesProp } from '@/components/ValidateInput'
+
+import ValidateInput, { RulesProp } from '@/components/ValidateInput.vue'
 import axios from 'axios'
 import createMessage from '@/components/createMessage'
+import ValidateForm from '@/components/ValidateForm.vue'
 
 export default defineComponent({
   name: 'Signup',
@@ -64,7 +65,7 @@ export default defineComponent({
       },
       {
         type: 'email',
-        message: '电子邮箱地址不能为空'
+        message: '电子邮箱地址格式不正确'
       }
     ]
     const nameRules: RulesProp = [
@@ -112,6 +113,7 @@ export default defineComponent({
     }
     return {
       onFromSubmit,
+      formData,
       emailsRules,
       nameRules,
       passwordRules,
