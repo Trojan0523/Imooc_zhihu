@@ -100,7 +100,7 @@ export default defineComponent({
           nickName: formData.nickName,
           password: formData.password
         }
-        await axios.post('/api/user', payload).then(data => {
+        await axios.post('/api/user', payload).then(() => {
           createMessage('注册成功 正在跳转登录界面', 'success', 2000)
           setTimeout(() => {
             router.push('/login')

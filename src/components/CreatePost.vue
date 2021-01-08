@@ -4,12 +4,12 @@
     <ValidateForm @form-submit="onFormSubmit">
     <div class="mb-3">
       <label class="form-label">文章标题：</label>
-      <ValidateInput :rules="titleRules" v-model="titleValue" placeholder="请输入文章详情" type="text">
+      <ValidateInput :rules="titleRules" v-model="titleValue" placeholder="请输入文章标题" type="text">
       </ValidateInput>
     </div>
     <div class="mb-3">
       <label class="form-label">文章详情: </label>
-      <ValidateInput type="textarea" placeholder="请输入文章详情" :rules="contentRules" v-model="contentValue"
+      <ValidateInput type="textarea" placeholder="请输入文章详情，支持Markdown" :rules="contentRules" v-model="contentValue"
                      rows="10" tag="textarea"></ValidateInput>
     </div>
     <template #submit>

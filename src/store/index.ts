@@ -71,13 +71,6 @@ const store = createStore<GlobalDataProps>({
     }
   },
   mutations: {
-    // login (state) {
-    //   state.user = {
-    //     ...state.user,
-    //     isLogin: true,
-    //     name: 'trojan'
-    //   }
-    // },
     fetchColumns (state, rawData) {
       state.columns = rawData.data.list
     },
@@ -101,6 +94,12 @@ const store = createStore<GlobalDataProps>({
       state.token = token
       localStorage.setItem('token', token)
       axios.defaults.headers.common.Authorization = `Bearer ${token}`
+    },
+    logout (state) {
+      state.token = ''
+      localStorage.removeItem('token')
+      state.user = { isLogin: false }
+      delete axios.defaults.headers.common.Authorization
     }
   },
   actions: {
