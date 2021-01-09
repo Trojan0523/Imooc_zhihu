@@ -10,7 +10,7 @@ export interface UserProps {
 }
 
 export interface PostProps {
-  _id: number;
+  _id?: string;
   title: string;
   excerpt?: string; // 摘要
   content?: string;
