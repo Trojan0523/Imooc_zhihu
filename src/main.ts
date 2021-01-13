@@ -11,7 +11,7 @@ axios.interceptors.request.use(config => {
     icode: '493E7401B51D60FB'
   }
   if (config.data instanceof FormData) {
-    config.data.append('icode', '493E7401B51D60FB')
+    config.data.append('icode', 'D79C86268C2634B2')
   } else {
     config.data = {
       ...config.data,
