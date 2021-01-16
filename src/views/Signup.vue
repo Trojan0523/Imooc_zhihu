@@ -1,6 +1,6 @@
 <template>
   <div class="signup-page mx-auto p-3 w-330">
-    <ValidateForm @from-submit="onFromSubmit">
+    <ValidateForm @form-submit="onFromSubmit">
       <div class="mb-3">
         <label class="form-label">邮箱地址</label>
         <ValidateInput :rules="emailsRules"
@@ -38,7 +38,6 @@
 <script lang="ts">
 import { defineComponent, reactive } from 'vue'
 import { useRouter } from 'vue-router'
-
 import ValidateInput, { RulesProp } from '@/components/ValidateInput.vue'
 import axios from 'axios'
 import createMessage from '@/components/createMessage'
@@ -100,7 +99,7 @@ export default defineComponent({
           nickName: formData.nickName,
           password: formData.password
         }
-        await axios.post('/api/user', payload).then(() => {
+        await axios.post('/users', payload).then(() => {
           createMessage('注册成功 正在跳转登录界面', 'success', 2000)
           setTimeout(() => {
             router.push('/login')
