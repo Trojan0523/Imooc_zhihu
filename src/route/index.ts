@@ -6,6 +6,8 @@ import PostList from '@/components/PostList.vue'
 import CreatePost from '@/components/CreatePost.vue'
 import store from '@/store'
 import Signup from '@/views/Signup.vue'
+import axios from 'axios'
+import createMessage from '@/components/createMessage'
 
 const router = createRouter({
   history: createWebHistory(),
@@ -35,7 +37,7 @@ const router = createRouter({
       path: '/create',
       name: 'create',
       component: CreatePost,
-      meta: { requiresLogin: true }
+      meta: { requiredLogin: true }
     },
     {
       path: '/signup',
@@ -46,16 +48,42 @@ const router = createRouter({
   ]
 })
 router.beforeEach((to, from, next) => {
-  if (to.meta.requiresLogin && !store.state.user.isLogin) {
-    next({ name: 'login' })
-    return {
-      path: '/login',
-      query: { redirect: to.fullPath }
+  const {
+    user,
+    token
+  } = store.state
+  const {
+    requiredLogin,
+    redirectAlreadyLogin
+  } = to.meta
+  if (!user.isLogin) {
+    if (token) {
+      axios.defaults.headers.common.Authorization = `Bearer ${token}`
+      store.dispatch('fetchCurrentUser').then(() => {
+        if (redirectAlreadyLogin) {
+          next('/')
+        } else {
+          next()
+        }
+      }).catch(e => {
+        console.error(e)
+        localStorage.removeItem('token')
+        createMessage(e, 'error')
+        next('login')
+      })
+    } else {
+      if (requiredLogin) {
+        next('login')
+      } else {
+        next()
+      }
     }
-  } else if (to.meta.redirectAlreadyLogin && store.state.user.isLogin) {
-    next('/')
   } else {
-    next()
+    if (redirectAlreadyLogin) {
+      next('/')
+    } else {
+      next()
+    }
   }
 })
 export default router
