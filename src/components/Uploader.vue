@@ -1,10 +1,16 @@
 <template>
   <div class="file-upload">
-    <button class="btn btn-primary" @click.prevent="triggerUpload">
-      <span v-if="fileStatus === 'loading'">正在上传...</span>
-      <span v-else-if="fileStatus === 'success'">上传成功</span>
-      <span v-else>点击上传</span>
-    </button>
+    <div class="file-upload-container" @click.prevent="triggerUpload" v-bind="$attrs">
+      <slot name="loading" v-if="fileStatus === 'loading'">
+        <button class="btn btn-primary" disabled>正在上传...</button>
+      </slot>
+      <slot name="uploaded" v-else-if="fileStatus === 'success'" :uploadedData="uploadedData">
+        <button class="btn btn-primary" disabled>上传成功</button>
+      </slot>
+      <slot name="default" v-else>
+        <button class="btn btn-primary">点击上传</button>
+      </slot>
+    </div>
     <input type="file" class="file-input d-none" ref="fileInput" @change="handleFileChange">
   </div>
 </template>
@@ -17,6 +23,7 @@ type UploadStatus = 'ready' | 'loading' | 'success' | 'error'
 type CheckFunction = (file: File) => boolean;
 export default defineComponent({
   emits: ['file-uploaded', 'file-uploaded-error'],
+  inheritAttrs: false,
   props: {
     action: {
       type: String,
@@ -29,6 +36,7 @@ export default defineComponent({
   setup (props, context) {
     const fileInput = ref<null | HTMLInputElement>(null)
     const fileStatus = ref<UploadStatus>('ready')
+    const uploadedData = ref()
     const triggerUpload = () => {
       if (fileInput.value) {
         fileInput.value.click()
@@ -53,6 +61,7 @@ export default defineComponent({
           }
         }).then(res => {
           fileStatus.value = 'success'
+          uploadedData.value = res.data
           context.emit('file-uploaded', res.data)
         }).catch((e) => {
           fileStatus.value = 'error'
@@ -68,8 +77,16 @@ export default defineComponent({
       fileInput,
       fileStatus,
       handleFileChange,
-      triggerUpload
+      triggerUpload,
+      uploadedData
     }
   }
 })
 </script>
+
+<style scoped>
+.file-upload-container {
+  height: 200px;
+  cursor: pointer;
+}
+</style>

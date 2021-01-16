@@ -18,13 +18,12 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, onMounted, watch } from 'vue'
+import { computed, defineComponent, watch } from 'vue'
 import { useStore } from 'vuex'
 import 'bootstrap/dist/css/bootstrap.min.css'
 import GlobalHeader from '@/components/GlobalHeader.vue'
 import Loader from '@/components/Loader.vue'
 import { GlobalDataProps } from '@/store'
-import axios from 'axios'
 import createMessage from '@/components/createMessage'
 
 export default defineComponent({
@@ -37,7 +36,6 @@ export default defineComponent({
     const store = useStore<GlobalDataProps>()
     const currentUser = computed(() => store.state.user)
     const isLoading = computed(() => store.state.loading)
-    const token = computed(() => store.state.token)
     const error = computed(() => store.state.error)
     watch(() => error.value.status, () => {
       const {
@@ -46,12 +44,6 @@ export default defineComponent({
       } = error.value
       if (status && message) {
         createMessage(message, 'error', 2000)
-      }
-    })
-    onMounted(() => {
-      if (!currentUser.value.isLogin && token.value) {
-        axios.defaults.headers.common.Authorization = `Bearer ${token.value}`
-        store.dispatch('fetchCurrentUser')
       }
     })
     return {
