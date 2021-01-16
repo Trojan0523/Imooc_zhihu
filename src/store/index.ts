@@ -1,14 +1,16 @@
 import { Commit, createStore } from 'vuex'
 import axios from 'axios'
-export interface ResponseType<P ={}> {
+
+export interface ResponseType<P = {}> {
   code: number;
   msg: string;
   data: P;
 }
+
 export interface UserProps {
   isLogin: boolean;
   nickName?: string;
-  _id?: number;
+  _id?: string;
   column?: string;
   email?: string;
 }
@@ -18,9 +20,10 @@ export interface PostProps {
   title: string;
   excerpt?: string; // 摘要
   content?: string;
-  image?: ImageProps;
+  image?: ImageProps | string;
   createdAt?: string;
   column: string;
+  author?: string;
 }
 
 export interface GlobalDataProps {
@@ -41,6 +44,7 @@ export interface ImageProps {
   _id?: string;
   url?: string;
   createdAt?: string;
+  fitUrl?: string;
 }
 
 export interface ColumnProps {
@@ -55,8 +59,7 @@ const getAndCommit = async (url: string, mutationsName: string, commit: Commit) 
   commit(mutationsName, data)
   return data
 }
-
-const postAndCommit = async (url: string, mutationsName: string, commit: Commit, payload: any) => {
+const postAndCommit = async (url: string, mutationsName: string, commit: Commit, payload: unknown) => {
   const { data } = await axios.post(url, payload)
   commit(mutationsName, data)
   return data
@@ -76,6 +79,9 @@ const store = createStore<GlobalDataProps>({
     }
   },
   mutations: {
+    createPost (state, newPost) {
+      state.posts.push(newPost)
+    },
     fetchColumns (state, rawData) {
       state.columns = rawData.data.list
     },
@@ -119,6 +125,9 @@ const store = createStore<GlobalDataProps>({
     },
     login ({ commit }, payload) {
       return postAndCommit('/user/login', 'login', commit, payload)
+    },
+    createPost ({ commit }, payload) {
+      return postAndCommit('/posts', 'createPost', commit, payload)
     },
     loginAndFetch ({ dispatch }, loginData) {
       return dispatch('login', loginData).then(() => {

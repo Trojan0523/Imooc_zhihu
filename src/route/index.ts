@@ -2,12 +2,12 @@ import { createRouter, createWebHistory } from 'vue-router'
 import Home from '@/views/Home.vue'
 import Login from '@/views/Login.vue'
 import ColumnDetail from '@/views/ColumnDetail.vue'
-import PostList from '@/components/PostList.vue'
 import CreatePost from '@/components/CreatePost.vue'
 import store from '@/store'
 import Signup from '@/views/Signup.vue'
 import axios from 'axios'
 import createMessage from '@/components/createMessage'
+import PostDetail from '@/views/PostDetail.vue'
 
 const router = createRouter({
   history: createWebHistory(),
@@ -31,7 +31,7 @@ const router = createRouter({
     {
       path: '/posts/:id',
       name: 'post',
-      component: PostList
+      component: PostDetail
     },
     {
       path: '/create',

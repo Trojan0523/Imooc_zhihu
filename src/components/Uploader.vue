@@ -83,10 +83,3 @@ export default defineComponent({
   }
 })
 </script>
-
-<style scoped>
-.file-upload-container {
-  height: 200px;
-  cursor: pointer;
-}
-</style>
