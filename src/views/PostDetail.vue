@@ -9,6 +9,10 @@
                <span class="text-muted col text-right font-italic">发表于：{{currentPost.createdAt}}</span>
              </div>
       <div v-html="currentHTML"></div>
+      <div v-if="showEditArea" class="btn-group mt-5">
+        <router-link :to="{name: 'create', query: {id: currentPost._id}}" type="button" class="btn btn-success">编辑</router-link>
+        <router-link to="" type="button" class="btn btn-danger">删除</router-link>
+      </div>
     </article>
   </div>
 </template>
@@ -19,7 +23,7 @@ import UserProfile from '@/components/UserProfile.vue'
 import MarkdownIt from 'markdown-it'
 import { useStore } from 'vuex'
 import { useRoute } from 'vue-router'
-import { GlobalDataProps, PostProps, ImageProps } from '@/store'
+import { GlobalDataProps, PostProps, ImageProps, UserProps } from '@/store'
 
 export default defineComponent({
   name: 'post-detail',
@@ -33,6 +37,15 @@ export default defineComponent({
       store.dispatch('fetchPost', currentId)
     })
     const currentPost = computed<PostProps>(() => store.getters.getCurrentPost(currentId))
+    const showEditArea = computed(() => {
+      const { _id, isLogin } = store.state.user
+      if (currentPost.value && currentPost.value.author && isLogin) {
+        const postAuthor = currentPost.value.author as UserProps
+        return postAuthor._id === _id
+      } else {
+        return false
+      }
+    })
     const currentHTML = computed(() => {
       if (currentPost.value && currentPost.value.content) {
         return md.render(currentPost.value.content)
@@ -49,7 +62,8 @@ export default defineComponent({
     return {
       currentPost,
       currentHTML,
-      currentImageUrl
+      currentImageUrl,
+      showEditArea
     }
   }
 })
