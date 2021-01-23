@@ -37,7 +37,7 @@ export interface GlobalDataProps {
   error: GlobalErrorProps;
   token: string;
   loading: boolean;
-  columns: {data: ListProps<ColumnProps>; isLoaded: boolean};
+  columns: {data: ListProps<ColumnProps>; currentPage: number; total: number};
   posts: {data: ListProps<PostProps>; loadedColumns: string[]};
   user: UserProps;
 }
@@ -60,7 +60,7 @@ export interface ColumnProps {
   avatar?: ImageProps;
   description: string;
 }
-
+// eslint-disable-next-line
 const asyncAndCommit = async (url: string, mutationsName: string, commit: Commit, config: AxiosRequestConfig = { method: 'GET' }, extraData?: any) => {
   const { data } = await axios(url, config)
   if (extraData) {
@@ -77,7 +77,7 @@ const store = createStore<GlobalDataProps>({
     },
     token: localStorage.getItem('token') || '',
     loading: false,
-    columns: { data: {}, isLoaded: false },
+    columns: { data: {}, currentPage: 0, total: 0 },
     posts: { data: {}, loadedColumns: [] },
     user: {
       isLogin: false
@@ -88,8 +88,13 @@ const store = createStore<GlobalDataProps>({
       state.posts.data[newPost._id] = newPost
     },
     fetchColumns (state, rawData) {
-      state.columns.data = arrToObj(rawData.data.list)
-      state.columns.isLoaded = true
+      const { data } = state.columns
+      const { list, count, currentPage } = rawData.data
+      state.columns = {
+        data: { ...data, ...arrToObj(list) },
+        total: count,
+        currentPage: currentPage * 1
+      }
     },
     fetchColumn (state, rawData) {
       state.columns.data[rawData.data._id] = rawData.data
@@ -131,9 +136,10 @@ const store = createStore<GlobalDataProps>({
     }
   },
   actions: {
-    fetchColumns ({ state, commit }) {
-      if (!state.columns.isLoaded) {
-        return asyncAndCommit('/columns', 'fetchColumns', commit)
+    fetchColumns ({ state, commit }, params = {}) {
+      const { currentPage = 1, pageSize = 6 } = params
+      if (state.columns.currentPage < currentPage) {
+        return asyncAndCommit(`/columns?currentPage=${currentPage}&pageSize=${pageSize}`, 'fetchColumns', commit)
       }
     },
     async fetchColumn ({ state, commit }, cid) {
