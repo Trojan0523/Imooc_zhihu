@@ -109,6 +109,9 @@ const store = createStore<GlobalDataProps>({
         }
       })
     },
+    deletePost (state, { data }) {
+      state.posts = state.posts.filter(post => post._id !== data.id)
+    },
     fetchCurrentUser (state, rawData) {
       state.user = { isLogin: true, ...rawData.data }
     },
@@ -126,6 +129,7 @@ const store = createStore<GlobalDataProps>({
     },
     logout (state) {
       state.token = ''
+      state.user = { isLogin: false }
       localStorage.removeItem('token')
       state.user = { isLogin: false }
       delete axios.defaults.headers.common.Authorization
@@ -155,6 +159,9 @@ const store = createStore<GlobalDataProps>({
     },
     createPost ({ commit }, payload) {
       return postAndCommit('/posts', 'createPost', commit, payload)
+    },
+    deletePost ({ commit }, id) {
+      return asyncAndCommit(`/posts/${id}`, 'deletePost', commit, { method: 'DELETE' })
     },
     loginAndFetch ({ dispatch }, loginData) {
       return dispatch('login', loginData).then(() => {
