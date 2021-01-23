@@ -29,14 +29,12 @@ export default defineComponent({
   },
   setup () {
     const store = useStore<GlobalDataProps>()
-    const list = computed(() => store.state.columns)
-    const biggerColumnLen = computed(() => store.getters.biggerColumnsLen)
+    const list = computed(() => store.getters.getColumns)
     onMounted(() => {
       store.dispatch('fetchColumns')
     })
     return {
-      list,
-      biggerColumnLen
+      list
     }
   }
 })
