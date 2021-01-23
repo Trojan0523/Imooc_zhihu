@@ -5,6 +5,7 @@
       action="/upload"
       :before-upload="beforeuploadCheck"
       @file-uploaded="handleFileUploaded"
+      :uploaded="uploadedData"
       class="d-flex justify-content-center align-items-center bg-light text-secondary w-100 my-4">
       <h2>点击上传头图</h2>
       <template #loading>
@@ -38,14 +39,14 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref } from 'vue'
+import { defineComponent, onMounted, ref } from 'vue'
 import ValidateForm from '@/components/ValidateForm.vue'
 import Uploader from '@/components/Uploader.vue'
 import { GlobalDataProps, PostProps, ResponseType, ImageProps } from '@/store'
 import ValidateInput, { RulesProp } from '@/components/ValidateInput.vue'
-import { beforeUploadCheck } from '../utils/helper'
+import { beforeUploadCheck } from '@/utils/helper'
 import createMessage from '@/components/createMessage'
-import { useRouter } from 'vue-router'
+import { useRouter, useRoute } from 'vue-router'
 import { useStore } from 'vuex'
 import axios from 'axios'
 
@@ -57,11 +58,14 @@ export default defineComponent({
     Uploader
   },
   setup () {
+    const uploadedData = ref()
     const titleValue = ref('')
     const contentValue = ref('')
     let imageId = ''
     const store = useStore<GlobalDataProps>()
     const router = useRouter()
+    const route = useRoute()
+    const isEditMode = !!route.query.id
     const titleRules: RulesProp = [
       {
         type: 'required',
@@ -74,6 +78,18 @@ export default defineComponent({
         message: '文章详情不能为空'
       }
     ]
+    onMounted(() => {
+      if (isEditMode) {
+        store.dispatch('fetchPost', route.query.id).then((rawData: ResponseType<PostProps>) => {
+          const currentPost = rawData.data
+          if (currentPost.image) {
+            uploadedData.value = { data: currentPost.image }
+          }
+          titleValue.value = currentPost.title
+          contentValue.value = currentPost.content || ''
+        })
+      }
+    })
     const onFormSubmit = (result: boolean) => {
       if (result) {
         const {
@@ -148,7 +164,8 @@ export default defineComponent({
       onFormSubmit,
       handleFileChange,
       beforeuploadCheck,
-      handleFileUploaded
+      handleFileUploaded,
+      uploadedData
     }
   }
 })
