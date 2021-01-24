@@ -1,5 +1,6 @@
 <template>
-  <nav class="navbar navbar-dark bg-primary justify-content-between mb-4">
+  <nav class="navbar-dark bg-primary justify-content-between mb-4">
+    <div class="w-75 mx-auto navbar">
     <router-link to="/" class="navbar-brand">之乎者也</router-link>
     <ul v-if="!user.isLogin" class="list-inline mb-0">
       <li class="list-inline-item">
@@ -21,6 +22,7 @@
         </Dropdown>
       </li>
     </ul>
+    </div>
   </nav>
 </template>
 

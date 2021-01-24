@@ -167,10 +167,10 @@ const store = createStore<GlobalDataProps>({
       })
     },
     login ({ commit }, payload) {
-      return asyncAndCommit('/user/login', 'login', commit, payload)
+      return asyncAndCommit('/user/login', 'login', commit, { method: 'post', data: payload })
     },
     createPost ({ commit }, payload) {
-      return asyncAndCommit('/posts', 'createPost', commit, payload)
+      return asyncAndCommit('/posts', 'createPost', commit, { method: 'post', data: payload })
     },
     deletePost ({ commit }, id) {
       return asyncAndCommit(`/posts/${id}`, 'deletePost', commit, { method: 'DELETE' })

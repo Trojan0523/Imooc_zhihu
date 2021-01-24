@@ -1,5 +1,5 @@
 <template>
-  <div class="container">
+  <div class="container-fluid px-0 flex-shrink-0">
     <GlobalHeader :user="currentUser" style="padding: 10px;"></GlobalHeader>
     <Loader v-if="isLoading"></Loader>
     <router-view></router-view>
