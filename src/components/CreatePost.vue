@@ -51,7 +51,7 @@ import { useStore } from 'vuex'
 import axios from 'axios'
 
 export default defineComponent({
-  name: 'Login',
+  name: 'CreatePost',
   components: {
     ValidateForm,
     ValidateInput,
